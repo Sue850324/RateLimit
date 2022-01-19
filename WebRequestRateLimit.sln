@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.757
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebRequestRateLimit", "WebRequestRateLimit\WebRequestRateLimit.csproj", "{4D0C211B-EEAD-4A6A-90C0-559F850EE466}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseLibrary", "BaseLibrary\BaseLibrary.csproj", "{DA98F039-836A-4F92-9B65-B80B2D86EF04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{4D0C211B-EEAD-4A6A-90C0-559F850EE466}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D0C211B-EEAD-4A6A-90C0-559F850EE466}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D0C211B-EEAD-4A6A-90C0-559F850EE466}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA98F039-836A-4F92-9B65-B80B2D86EF04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA98F039-836A-4F92-9B65-B80B2D86EF04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA98F039-836A-4F92-9B65-B80B2D86EF04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA98F039-836A-4F92-9B65-B80B2D86EF04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

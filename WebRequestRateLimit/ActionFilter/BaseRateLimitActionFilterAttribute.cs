@@ -3,6 +3,7 @@ using System.Web;
 using System;
 using System.Web.Caching;
 using System.Net;
+using WebRequestRateLimit.Service;
 
 namespace WebRequestRateLimit.ActionFilter
 {
@@ -10,6 +11,9 @@ namespace WebRequestRateLimit.ActionFilter
     public abstract class BaseRateLimitActionFilterAttribute : ActionFilterAttribute
     {
         protected readonly int _seconds;
+
+        public object ActionExecutingContextModel { get; private set; }
+
         public BaseRateLimitActionFilterAttribute(int seconds = 10)
         {
             _seconds = seconds;
@@ -27,21 +31,15 @@ namespace WebRequestRateLimit.ActionFilter
                 filterContext.HttpContext.Response.StatusCode = (int)GetFailStatusCode();
             }
 
-            string cacheValue = "1";
-            CacheDependency dependency = null;
-            CacheItemRemovedCallback onRemoveCallback = null;
+            CacheHelper.AddCache(cacheKey, "1", null, _seconds, null);
 
-            HttpRuntime.Cache.Add(cacheKey,
-                cacheValue,
-                dependency,
-                DateTime.Now.AddSeconds(_seconds),
-                Cache.NoSlidingExpiration,
-                CacheItemPriority.Low,
-                onRemoveCallback);
+
+
         }
 
         private string GetCacheKey(ActionExecutingContext filterContext)
         {
+
             string controllerName = filterContext.ActionDescriptor.ControllerDescriptor.ControllerName;
             string actionName = filterContext.ActionDescriptor.ActionName;
             string identityValue = null;
@@ -55,7 +53,7 @@ namespace WebRequestRateLimit.ActionFilter
                 identityValue = HttpContext.Current.User.Identity.ToString();
             }
 
-            return $"{controllerName}-{actionName}-{identityValue}";
+            return CacheHelper.GetCacheKey(controllerName, actionName, identityValue);
         }
     }
 }

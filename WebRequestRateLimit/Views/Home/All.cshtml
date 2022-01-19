@@ -1,0 +1,21 @@
+﻿@model WebRequestRateLimit.Models.StudentViewModel
+@using PagedList.Mvc;
+@using PagedList;
+
+@foreach (var item in Model.GetList)
+{
+    <tr class="datarowodd">
+        <td align="center" valign="center">@item.CacheName</td>
+        <td align="center" valign="center">@item.CacheID</td>
+        <td align="center" valign="center">@item.Name</td>
+        <td align="center" valign="center">@item.StudentID</td>
+        <td align="center" valign="center">@item.Grade</td>
+        <td align="center" valign="center">@item.SextualDisplay</td>
+        <td align="center" valign="center">@item.Locale</td>
+        <td align="center" valign="center">@item.PhoneDisplay</td>
+    </tr>
+}
+
+</table>
+
+@Html.PagedListPager((IPagedList)Model.GetList, x => Url.Action("All", new { page = x }))
