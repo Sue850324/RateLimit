@@ -4,9 +4,7 @@ namespace WebRequestRateLimit.Models
 {
     public class GetStudentDataModel
     {
-        public Guid CacheID { get; set; }
         public int StudentID { get; set; }
-        public string CacheName { get; set; }
         public string Name { get; set; }
         public int? Grade { get; set; }
         public bool? Sextual { get; set; }

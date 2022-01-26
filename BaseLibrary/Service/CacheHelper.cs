@@ -9,38 +9,59 @@ namespace WebRequestRateLimit.Service
 {
     public class CacheHelper
     {
-        public static MemoryCache _cache = MemoryCache.Default;
+        public static MemoryCache CacheObject = MemoryCache.Default;
         const string LockKey = "Key_123";
 
-        public static Object GetCacheObject(string key)
+        public static object GetCacheObject(string key)
         {
-            string _lockKey = $"{LockKey}{key}";
-            lock (_cache)
+            string lockObject = $"{LockKey}{key}";
+
+            lock (CacheObject)
             {
-                if (_cache[_lockKey] == null)
+                if (CacheObject[lockObject] == null)
                 {
-                    _cache.Add(_lockKey, new object(), new CacheItemPolicy() { SlidingExpiration = new TimeSpan(0, 10, 0) });
+                    CacheObject.Add(lockObject, new object(), new CacheItemPolicy() { SlidingExpiration = new TimeSpan(0, 10, 0) });
                 }
 
-                return _cache[_lockKey];
+                return CacheObject[lockObject];
             }
         }
 
-        public static void RefreshCache(string cacheName, object model)
+        public static T Get<T>(string key, Func<T> getDataWork, TimeSpan absoluteExpireTime) where T : class
         {
-            Console.WriteLine($"Thread { Thread.CurrentThread.ManagedThreadId} Start Job, Now: { DateTime.Now}");
-            Thread.Sleep(10000);
-            _cache.Remove(cacheName);
-
-            CacheItemPolicy cacheItemPolicy = new CacheItemPolicy()
+            lock (GetCacheObject(key))
             {
-                AbsoluteExpiration = DateTime.Now.AddDays(1)
-            };
+                T result = CacheObject[key] as T;
 
-            _cache.Add(cacheName, model, cacheItemPolicy);
+                if (result == null)
+                {
+                    result = getDataWork();
 
-            Console.WriteLine($"Thread { Thread.CurrentThread.ManagedThreadId} Stop Job, Now: { DateTime.Now}");
-            Console.WriteLine("OK");
+                    if (result != null)
+                    {
+                        Set(key, result, absoluteExpireTime);
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        public static void Set<T>(string key, T data, TimeSpan absoluteExpireTime) where T : class
+        {
+            if (String.IsNullOrEmpty(key))
+            {
+                throw new ArgumentNullException("key");
+            }
+            else if (data == null)
+            {
+                throw new ArgumentNullException("data");
+            }
+            else
+            {
+                DateTimeOffset expireTime = DateTimeOffset.UtcNow.Add(absoluteExpireTime);
+                CacheObject.Set(key, data, expireTime);
+            }
         }
 
         public static string GetCacheKey(string controllerName, string actionName, string identityValue)
